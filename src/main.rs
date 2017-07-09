@@ -1,10 +1,13 @@
+#[macro_use]
+extern crate log;
+extern crate simple_logger;
+extern crate iron;
+extern crate time;
+
 use std::ffi::OsString;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 use std::str::FromStr;
-
-extern crate iron;
-extern crate time;
 
 use iron::prelude::*;
 use iron::{BeforeMiddleware, AfterMiddleware, typemap};
@@ -26,7 +29,7 @@ impl BeforeMiddleware for ResponseTime {
 impl AfterMiddleware for ResponseTime {
     fn after(&self, req: &mut Request, res: Response) -> IronResult<Response> {
         let delta = precise_time_ns() - *req.extensions.get::<ResponseTime>().unwrap();
-        println!("Request took: {} ms", (delta as f64) / 1000000.0);
+        info!("Request took: {} ms", (delta as f64) / 1000000.0);
         Ok(res)
     }
 }
@@ -43,24 +46,26 @@ fn start_server() {
 }
 
 fn main() {
+    simple_logger::init_with_level(log::LogLevel::Debug).unwrap();
+
     let x = "Hello, world!";
-    println!("{}", x);
+    info!("{}", x);
     let o = OsString::from(x);
     let y: bool = x.eq(&o);
-    println!("string is equal to os string: {}", y);
+    info!("string is equal to os string: {}", y);
 
     let vector: Vec<i32> = vec![1, 2, 3];
 
     if let Some(ble) = vector.get(100) {
-        println!("ble: {}", ble);
+        info!("ble: {}", ble);
     } else {
-        println!("vector does not have index 100");
+        info!("vector does not have index 100");
     }
 
     let number = get_or_default(&vector, 1, -1);
-    println!("ble2: {}", number);
+    info!("ble2: {}", number);
     let number = get_or_default2(&vector, 100, -1);
-    println!("ble3: {}", number);
+    info!("ble3: {}", number);
 
     assert_eq!(Some("car").unwrap_or("bike"), "car");
     assert_eq!(Some(1).unwrap_or(-1), 1);
@@ -69,9 +74,9 @@ fn main() {
 
     let ip: Ipv4Addr = Ipv4Addr::new(127, 0, 0, 1);
     let ipv6 = Ipv6Addr::from_str("::1").unwrap();
-    println!("ip: {}", ip.is_loopback());
-    println!("ip2: {}", ip.to_ipv6_mapped().is_loopback());
-    println!("ip3: {}", ipv6.is_loopback());
+    info!("ip: {}", ip.is_loopback());
+    info!("ip2: {}", ip.to_ipv6_mapped().is_loopback());
+    info!("ip3: {}", ipv6.is_loopback());
 
     start_server();
 }

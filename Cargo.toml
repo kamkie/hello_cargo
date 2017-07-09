@@ -4,5 +4,8 @@ version = "0.1.0"
 authors = ["Kamil Kiewisz <kamkie@outlook.com>"]
 
 [dependencies]
+log = "0.3.8"
+simple_logger = "0.4.0"
+
 iron = "0.5.1"
 time = "0.1.38"
