@@ -56,8 +56,8 @@ fn main() {
 
     let vector: Vec<i32> = vec![1, 2, 3];
 
-    if let Some(ble) = vector.get(100) {
-        info!("ble: {}", ble);
+    if let Some(number) = vector.get(100) {
+        info!("ble1: {}", number);
     } else {
         info!("vector does not have index 100");
     }
@@ -66,6 +66,12 @@ fn main() {
     info!("ble2: {}", number);
     let number = get_or_default2(&vector, 100, -1);
     info!("ble3: {}", number);
+    let number = get_or_default3(vec![1, 2, 3, 4, 5, 6]);
+    info!("ble4: {}", number);
+    let number = *vector.get(100).unwrap_or(&-1);
+    info!("ble5: {}", number);
+
+    do_something([1, 2, 3, 4]);
 
     assert_eq!(Some("car").unwrap_or("bike"), "car");
     assert_eq!(Some(1).unwrap_or(-1), 1);
@@ -81,7 +87,7 @@ fn main() {
     start_server();
 }
 
-fn get_or_default(ref vec: &Vec<i32>, index: usize, default: i32) -> i32 {
+fn get_or_default(vec: &Vec<i32>, index: usize, default: i32) -> i32 {
     if let Some(&ble) = vec.get(index) {
         ble
     } else {
@@ -94,4 +100,13 @@ fn get_or_default2(ref vec: &Vec<i32>, index: usize, default: i32) -> i32 {
         Some(&ble) => ble,
         _ => default,
     }
+}
+
+fn get_or_default3(vec: Vec<i32>) -> i32 {
+    info!("args: {:?}", vec);
+    *vec.get(100).unwrap_or(&-1)
+}
+
+fn do_something(args: [u8; 4]) {
+    info!("args: {:?}", args);
 }
