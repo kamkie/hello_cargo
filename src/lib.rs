@@ -3,6 +3,7 @@ extern crate log;
 extern crate simple_logger;
 extern crate iron;
 extern crate time;
+extern crate ansi_term;
 
 use std::ffi::OsString;
 use std::net::Ipv4Addr;
@@ -100,7 +101,15 @@ pub fn demo() {
     let ipv6 = Ipv6Addr::from_str("::1").unwrap();
     info!("ip: {}", ip.is_loopback());
     info!("ip2: {}", ip.to_ipv6_mapped().is_loopback());
-    info!("ip3: {}", ipv6.is_loopback());
+    info!("mip3: {}", ipv6.is_loopback());
+
+    use ansi_term::Colour::{Blue, Yellow};
+    info!(
+        "Demonstrating {} and {}!",
+        Blue.bold().paint("blue bold"),
+        Yellow.underline().paint("yellow underline")
+    );
+    info!("Yellow on blue: {}", Yellow.on(Blue).paint("wow!"));
 }
 
 fn get_or_default(vec: &Vec<i32>, index: usize, default: i32) -> i32 {
