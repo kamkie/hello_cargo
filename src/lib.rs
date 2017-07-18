@@ -1,18 +1,26 @@
+#![feature(i128_type)]
+#![feature(iterator_step_by)]
+
 #[macro_use]
 extern crate log;
-extern crate simple_logger;
 extern crate iron;
 extern crate time;
 extern crate ansi_term;
+extern crate num;
 
 use std::ffi::OsString;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 use std::str::FromStr;
+use std::str;
+use std::cmp;
+
+use num::bigint::BigUint;
 
 use iron::prelude::*;
 use iron::{BeforeMiddleware, AfterMiddleware, typemap};
 use time::precise_time_ns;
+use time::{Duration, PreciseTime};
 
 struct ResponseTime;
 
@@ -39,6 +47,114 @@ fn hello_world(_: &mut Request) -> IronResult<Response> {
     Ok(Response::with((iron::status::Ok, "Hello World")))
 }
 
+pub fn run_fib(n: i32) -> BigUint {
+    let start_time = PreciseTime::now();
+    let result = fib(n);
+    let stop_time = PreciseTime::now();
+    let delta: Duration = start_time.to(stop_time);
+    info!(
+        "fib: {} = result {} took: {}",
+        n,
+        decimal_mark3(&result.to_str_radix(10)),
+        delta
+    );
+    result
+}
+
+fn decimal_mark3(s: &String) -> String {
+    let mut result = String::with_capacity(s.len() + (s.len() / 3));
+    if s.len() <= 3 {
+        result.push_str(&s);
+        return result;
+    }
+
+    let orfans = s.len() % 3;
+    result.push_str(&s[0..orfans]);
+    if orfans > 0 {
+        result.push(' ');
+    }
+
+    for i in (orfans..s.len()).step_by(3) {
+        if i >= s.len() {
+            break;
+        }
+        let index_stop = cmp::min(i + 3, s.len());
+        result.push_str(&s[i..index_stop]);
+
+        if i + 3 < s.len() {
+            result.push(' ');
+        }
+    }
+
+    result
+}
+
+fn fib(n: i32) -> BigUint {
+    if n <= 0 {
+        return BigUint::from(0u64);
+    }
+    if n == 1 || n == 2 {
+        return BigUint::from(1u64);
+    }
+    let mut fib_prev: BigUint = BigUint::from(1u64);
+    let mut fib_current: BigUint = BigUint::from(2u64);
+    for _ in 3..n {
+        let sum = fib_prev + &fib_current;
+        fib_prev = fib_current;
+        fib_current = sum;
+    }
+    fib_current
+}
+
+//fn fib(n: i32) -> u128 {
+//    if n <= 0 {
+//        return 0;
+//    }
+//    if n == 1 {
+//        return 1;
+//    }
+//    let mut fib_prev: u128 = 0;
+//    let mut fib_current: u128 = 1;
+//    for i in 0..(n - 1) {
+//        let (sum, overflow) = fib_prev.overflowing_add(fib_current);
+//        if overflow {
+//            warn!("overflow reached for fib({})", i)
+//        }
+//        fib_prev = fib_current;
+//        fib_current = sum;
+//    }
+//    fib_current
+//}
+
+//fn fib(n: i32) -> i64 {
+//    fib(n - 2) + fib(n - 1)
+//}
+
+//fn fib(n: i32) -> i64 {
+//    match n {
+//        0 => 0,
+//        n => fibonacci_tail(n, 1, 0, 1),
+//    }
+//}
+
+//fn fibonacci_tail(n: i32, m: i32, fib_prev: i64, fib_current: i64) -> i64 {
+//    if n == m {
+//        return fib_current;
+//    } else {
+//        return fibonacci_tail(n, m + 1, fib_current, fib_prev + fib_current);
+//    }
+//}
+
+//fn fib(n: i32) -> i64 {
+//    match n {
+//        0 => 0,
+//        1 => 1,
+//        2 => 1,
+//        3 => 2,
+//        n => fib(n - 2) + fib(n - 1),
+//    }
+//}
+
 pub fn start_server() {
     let mut chain = Chain::new(hello_world);
     chain.link_before(ResponseTime);
@@ -61,12 +177,22 @@ mod tests {
     fn another() {
         panic!("Make this test fail");
     }
+
+    #[test]
+    fn decimal_mark3_test() {
+        use decimal_mark3;
+        assert_eq!(decimal_mark3(&String::from("")), "");
+        assert_eq!(decimal_mark3(&String::from("1")), "1");
+        assert_eq!(decimal_mark3(&String::from("12")), "12");
+        assert_eq!(decimal_mark3(&String::from("123")), "123");
+        assert_eq!(decimal_mark3(&String::from("123456")), "123 456");
+        assert_eq!(decimal_mark3(&String::from("1234567")), "1 234 567");
+        assert_eq!(decimal_mark3(&String::from("12345678")), "12 345 678");
+    }
 }
 
 
 pub fn demo() {
-    simple_logger::init_with_level(log::LogLevel::Debug).unwrap();
-
     let x = "Hello, world!";
     info!("{}", x);
     let o = OsString::from(x);

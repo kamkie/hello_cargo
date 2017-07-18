@@ -10,4 +10,6 @@ simple_logger = "0.4.0"
 iron = "0.5.1"
 time = "0.1.38"
 
+num = "0.1.39"
+
 ansi_term = "0.9"
