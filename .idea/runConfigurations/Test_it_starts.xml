@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Run hello_cargo" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+  <configuration default="false" name="Test it_starts" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
     <option name="channel" value="DEFAULT" />
-    <option name="command" value="run --package hello_cargo --bin hello_cargo" />
+    <option name="command" value="test --package hello_cargo --test integration_test it_starts -- --exact" />
     <option name="nocapture" value="true" />
     <option name="backtrace" value="FULL" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />

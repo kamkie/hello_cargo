@@ -12,7 +12,6 @@ use std::ffi::OsString;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 use std::str::FromStr;
-use std::str;
 use std::cmp;
 
 use num::bigint::BigUint;
