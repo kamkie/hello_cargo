@@ -5,7 +5,6 @@ fn it_starts() {
     hello_cargo::demo()
 }
 
-
 #[test]
 fn run_fib() {
     hello_cargo::run_fib(1);

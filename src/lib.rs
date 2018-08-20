@@ -5,16 +5,16 @@ extern crate log;
 extern crate num;
 extern crate time;
 
-use iron::{AfterMiddleware, BeforeMiddleware, typemap};
 use iron::prelude::*;
+use iron::{typemap, AfterMiddleware, BeforeMiddleware};
 use num::bigint::BigUint;
 use std::cmp;
 use std::ffi::OsString;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 use std::str::FromStr;
-use time::{Duration, PreciseTime};
 use time::precise_time_ns;
+use time::{Duration, PreciseTime};
 
 struct ResponseTime;
 
@@ -32,7 +32,7 @@ impl BeforeMiddleware for ResponseTime {
 impl AfterMiddleware for ResponseTime {
     fn after(&self, req: &mut Request, res: Response) -> IronResult<Response> {
         let delta = precise_time_ns() - *req.extensions.get::<ResponseTime>().unwrap();
-        info!("Request took: {} ms", (delta as f64) / 1000000.0);
+        info!("Request took: {} ms", (delta as f64) / 1_000_000.0);
         Ok(res)
     }
 }
@@ -55,7 +55,7 @@ pub fn run_fib(n: i32) -> BigUint {
     result
 }
 
-fn decimal_mark3(s: &String) -> String {
+fn decimal_mark3(s: &str) -> String {
     let mut result = String::with_capacity(s.len() + (s.len() / 3));
     if s.len() <= 3 {
         result.push_str(&s);
@@ -185,7 +185,6 @@ mod tests {
     }
 }
 
-
 pub fn demo() {
     let x = "Hello, world!";
     info!("{}", x);
@@ -205,10 +204,8 @@ pub fn demo() {
     info!("ble2: {}", number);
     let number = get_or_default2(&vector, 100, -1);
     info!("ble3: {}", number);
-    let number = get_or_default3(vec![1, 2, 3, 4, 5, 6]);
-    info!("ble4: {}", number);
     let number = *vector.get(100).unwrap_or(&-1);
-    info!("ble5: {}", number);
+    info!("ble4: {}", number);
 
     do_something([1, 2, 3, 4]);
 
@@ -232,7 +229,7 @@ pub fn demo() {
     info!("Yellow on blue: {}", Yellow.on(Blue).paint("wow!"));
 }
 
-fn get_or_default(vec: &Vec<i32>, index: usize, default: i32) -> i32 {
+fn get_or_default(vec: &[i32], index: usize, default: i32) -> i32 {
     if let Some(&ble) = vec.get(index) {
         ble
     } else {
@@ -240,16 +237,11 @@ fn get_or_default(vec: &Vec<i32>, index: usize, default: i32) -> i32 {
     }
 }
 
-fn get_or_default2(ref vec: &Vec<i32>, index: usize, default: i32) -> i32 {
+fn get_or_default2(vec: &[i32], index: usize, default: i32) -> i32 {
     match vec.get(index) {
         Some(&ble) => ble,
         _ => default,
     }
-}
-
-fn get_or_default3(vec: Vec<i32>) -> i32 {
-    info!("args: {:?}", vec);
-    *vec.get(100).unwrap_or(&-1)
 }
 
 fn do_something(args: [u8; 4]) {
