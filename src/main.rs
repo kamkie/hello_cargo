@@ -4,7 +4,7 @@ extern crate log;
 extern crate simple_logger;
 
 fn main() {
-    simple_logger::init_with_level(log::LogLevel::Debug).unwrap();
+    simple_logger::init_with_level(log::Level::Debug).unwrap();
     info!("starting app");
 
     hello_cargo::run_fib(1);
