@@ -1,8 +1,7 @@
+extern crate hello_cargo;
 #[macro_use]
 extern crate log;
 extern crate simple_logger;
-
-extern crate hello_cargo;
 
 fn main() {
     simple_logger::init_with_level(log::LogLevel::Debug).unwrap();

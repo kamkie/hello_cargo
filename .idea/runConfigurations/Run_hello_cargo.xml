@@ -6,6 +6,6 @@
     <option name="backtrace" value="FULL" />
     <option name="workingDirectory" value="file://$PROJECT_DIR$" />
     <envs />
-    <method />
+    <method v="2" />
   </configuration>
 </component>

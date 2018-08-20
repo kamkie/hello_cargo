@@ -1,25 +1,20 @@
-#![feature(i128_type)]
-#![feature(iterator_step_by)]
-
+extern crate ansi_term;
+extern crate iron;
 #[macro_use]
 extern crate log;
-extern crate iron;
-extern crate time;
-extern crate ansi_term;
 extern crate num;
+extern crate time;
 
+use iron::{AfterMiddleware, BeforeMiddleware, typemap};
+use iron::prelude::*;
+use num::bigint::BigUint;
+use std::cmp;
 use std::ffi::OsString;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 use std::str::FromStr;
-use std::cmp;
-
-use num::bigint::BigUint;
-
-use iron::prelude::*;
-use iron::{BeforeMiddleware, AfterMiddleware, typemap};
-use time::precise_time_ns;
 use time::{Duration, PreciseTime};
+use time::precise_time_ns;
 
 struct ResponseTime;
 
