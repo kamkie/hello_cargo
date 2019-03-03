@@ -1,6 +1,7 @@
 target/
 **/*.rs.bk
 .idea/*
+.vs
 !.idea/runConfigurations
 !.idea/runConfigurations/*
 cmake-build-debug/
