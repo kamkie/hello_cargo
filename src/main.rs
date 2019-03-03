@@ -7,6 +7,8 @@ fn main() {
     simple_logger::init_with_level(log::Level::Debug).unwrap();
     info!("starting app");
 
+    hello_cargo::demo();
+
     hello_cargo::run_fib(1);
     hello_cargo::run_fib(2);
     hello_cargo::run_fib(3);
@@ -25,7 +27,6 @@ fn main() {
     //    hello_cargo::run_fib(10_000);
     //    hello_cargo::run_fib(100_000);
     //    hello_cargo::run_fib(1_000_000);
-    //    hello_cargo::demo();
 
     hello_cargo::start_server();
 }

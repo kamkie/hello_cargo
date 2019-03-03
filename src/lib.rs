@@ -174,7 +174,7 @@ mod tests {
 
     #[test]
     fn decimal_mark3_test() {
-        use decimal_mark3;
+        use crate::decimal_mark3;
         assert_eq!(decimal_mark3(&String::from("")), "");
         assert_eq!(decimal_mark3(&String::from("1")), "1");
         assert_eq!(decimal_mark3(&String::from("12")), "12");
