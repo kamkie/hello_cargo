@@ -3,8 +3,11 @@ extern crate hello_cargo;
 extern crate log;
 extern crate simple_logger;
 
+use log::LevelFilter::Info;
+use simple_logger::SimpleLogger;
+
 fn main() {
-    simple_logger::init_with_level(log::Level::Debug).unwrap();
+    SimpleLogger::new().with_level(Info).init().unwrap();
     info!("starting app");
 
     hello_cargo::demo();
