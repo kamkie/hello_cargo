@@ -3,7 +3,6 @@ extern crate iron;
 #[macro_use]
 extern crate log;
 extern crate num;
-extern crate time;
 
 use iron::prelude::*;
 use iron::{typemap, AfterMiddleware, BeforeMiddleware};
@@ -13,26 +12,25 @@ use std::ffi::OsString;
 use std::net::Ipv4Addr;
 use std::net::Ipv6Addr;
 use std::str::FromStr;
-use time::precise_time_ns;
-use time::{Duration, PreciseTime};
+use std::time::{Duration, Instant};
 
 struct ResponseTime;
 
 impl typemap::Key for ResponseTime {
-    type Value = u64;
+    type Value = Instant;
 }
 
 impl BeforeMiddleware for ResponseTime {
     fn before(&self, req: &mut Request) -> IronResult<()> {
-        req.extensions.insert::<ResponseTime>(precise_time_ns());
+        req.extensions.insert::<ResponseTime>(Instant::now());
         Ok(())
     }
 }
 
 impl AfterMiddleware for ResponseTime {
     fn after(&self, req: &mut Request, res: Response) -> IronResult<Response> {
-        let delta = precise_time_ns() - *req.extensions.get::<ResponseTime>().unwrap();
-        info!("Request took: {} ms", (delta as f64) / 1_000_000.0);
+        let delta = Instant::now().duration_since(*req.extensions.get::<ResponseTime>().unwrap());
+        info!("Request took: {:?}", delta);
         Ok(res)
     }
 }
@@ -42,12 +40,12 @@ fn hello_world(_: &mut Request) -> IronResult<Response> {
 }
 
 pub fn run_fib(n: i32) -> BigUint {
-    let start_time = PreciseTime::now();
+    let start_time = Instant::now();
     let result = fib(n);
-    let stop_time = PreciseTime::now();
-    let delta: Duration = start_time.to(stop_time);
+    let stop_time = Instant::now();
+    let delta: Duration = stop_time.duration_since(start_time);
     info!(
-        "fib: {} = result {} took: {}",
+        "fib: {} = result {} took: {:?}",
         n,
         decimal_mark3(&result.to_str_radix(10)),
         delta
@@ -58,7 +56,7 @@ pub fn run_fib(n: i32) -> BigUint {
 fn decimal_mark3(s: &str) -> String {
     let mut result = String::with_capacity(s.len() + (s.len() / 3));
     if s.len() <= 3 {
-        result.push_str(&s);
+        result.push_str(s);
         return result;
     }
 
