@@ -95,7 +95,7 @@ dependencies = [
  "log 0.4.14",
  "num",
  "simple_logger",
- "time 0.1.44",
+ "time 0.3.5",
 ]
 
 [[package]]
