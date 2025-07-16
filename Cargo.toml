@@ -2,7 +2,7 @@
 name = "hello_cargo"
 version = "0.1.0"
 authors = ["Kamil Kiewisz <kamkie@outlook.com>"]
-edition = "2018"
+edition = "2024"
 
 [dependencies]
 log = "0.4.27"

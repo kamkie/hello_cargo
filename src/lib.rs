@@ -5,7 +5,7 @@ extern crate log;
 extern crate num;
 
 use iron::prelude::*;
-use iron::{typemap, AfterMiddleware, BeforeMiddleware};
+use iron::{AfterMiddleware, BeforeMiddleware, typemap};
 use num::bigint::BigUint;
 use std::cmp;
 use std::ffi::OsString;
@@ -30,7 +30,7 @@ impl BeforeMiddleware for ResponseTime {
 impl AfterMiddleware for ResponseTime {
     fn after(&self, req: &mut Request, res: Response) -> IronResult<Response> {
         let delta = Instant::now().duration_since(*req.extensions.get::<ResponseTime>().unwrap());
-        info!("Request took: {:?}", delta);
+        info!("Request took: {delta:?}");
         Ok(res)
     }
 }
@@ -44,12 +44,8 @@ pub fn run_fib(n: i32) -> BigUint {
     let result = fib(n);
     let stop_time = Instant::now();
     let delta: Duration = stop_time.duration_since(start_time);
-    info!(
-        "fib: {} = result {} took: {:?}",
-        n,
-        decimal_mark3(&result.to_str_radix(10)),
-        delta
-    );
+    let result_dec = decimal_mark3(&result.to_str_radix(10));
+    info!("fib: {n} = result: {result_dec} took: {delta:?}");
     result
 }
 
