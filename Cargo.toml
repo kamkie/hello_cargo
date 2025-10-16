@@ -6,7 +6,7 @@ edition = "2024"
 
 [dependencies]
 log = "0.4.28"
-simple_logger = "5.0.0"
+simple_logger = "5.1.0"
 
 iron = "0.6.0"
 
